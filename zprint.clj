@@ -1,5 +1,8 @@
 #!/usr/bin/env bb
 
+;; bb --nrepl-server 5678
+;; Using vim with conjure to develop
+
 (require '[clojure.java.io :as io])
 (require '[clojure.string :as s])
 (require '[clojure.java.shell :refer [sh]])
