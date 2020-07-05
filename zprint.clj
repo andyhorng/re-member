@@ -7,11 +7,16 @@
 (require '[clojure.string :as s])
 (require '[clojure.java.shell :refer [sh]])
 
-(do (->> (io/file (or (first *command-line-args*) "."))
-         (file-seq)
-         (filter (fn [line] (or (s/ends-with? line ".clj") (s/ends-with? line ".cljs") (s/ends-with? line ".cljc"))))
-         (map (fn [f]
-                (->> (sh "zprint" :in (io/file f))
-                     :out
-                     (spit (io/file f))))))
-    (prn "done"))
+(->> (io/file (or (first *command-line-args*) "."))
+     file-seq
+     (filter (fn [f]
+               (let [fname (-> f .getName)]
+                 (or (s/ends-with? fname ".clj")
+                     (s/ends-with? fname ".cljs")
+                     (s/ends-with? fname ".cljc")))))
+     (map (fn [f]
+            (prn (-> f .getName))
+            (->>
+              (sh "zprint" :in (slurp f))
+              :out
+              (spit f)))))
